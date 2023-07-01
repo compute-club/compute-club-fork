@@ -9,7 +9,6 @@ Just aiming to get a better feel of the ergonomics of working with Ray.
 
 # Standard libraries
 import os
-import functools
 
 # Libraries for data processing
 import numpy as np
@@ -83,46 +82,6 @@ def trainer_init_per_worker(train_dataset, eval_dataset=None, **config):
     learning_rate = config.get("learning_rate", 0.00002)
     weight_decay = config.get("weight_decay", 0.01)
 
-    deepspeed = {
-        "fp16": {
-            "enabled": "auto",
-            "initial_scale_power": 8,
-        },
-        "bf16": {"enabled": "auto"},
-        "optimizer": {
-            "type": "AdamW",
-            "params": {
-                "lr": "auto",
-                "betas": "auto",
-                "eps": "auto",
-            },
-        },
-        "zero_optimization": {
-            "stage": 3,
-            "offload_optimizer": {
-                "device": "cpu",
-                "pin_memory": True,
-            },
-            "offload_param": {
-                "device": "cpu",
-                "pin_memory": True,
-            },
-            "overlap_comm": True,
-            "contiguous_gradients": True,
-            "reduce_bucket_size": "auto",
-            "stage3_prefetch_bucket_size": "auto",
-            "stage3_param_persistence_threshold": "auto",
-            "gather_16bit_weights_on_model_save": True,
-            "round_robin_gradients": True,
-        },
-        "gradient_accumulation_steps": "auto",
-        "gradient_clipping": "auto",
-        "steps_per_print": 10,
-        "train_batch_size": "auto",
-        "train_micro_batch_size_per_gpu": "auto",
-        "wall_clock_breakdown": False,
-    }
-
     print("Preparing training arguments")
     training_args = TrainingArguments(
         "output",
@@ -139,7 +98,6 @@ def trainer_init_per_worker(train_dataset, eval_dataset=None, **config):
         disable_tqdm=True,  # declutter the output a little
         fp16=True,
         gradient_checkpointing=True,
-        #deepspeed=deepspeed,
     )
     disable_progress_bar()
 
