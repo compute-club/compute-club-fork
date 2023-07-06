@@ -1,3 +1,4 @@
 data
 scripts/train/explorations/logs
 *wandb*
+*.DS_Store
