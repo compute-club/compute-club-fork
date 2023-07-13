@@ -14,9 +14,6 @@ ENV PROJECT_HOME=$USER_HOME/project
 RUN groupadd --gid $USER_GID $USER_NAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USER_NAME
 
-# Force color prompt
-RUN sed -i 's/^#force_color_prompt=yes/force_color_prompt=yes/' $USER_HOME/.bashrc
-
 # Install OS packages
 RUN apt-get update -y  \
     && apt-get install -yq --no-install-recommends \
