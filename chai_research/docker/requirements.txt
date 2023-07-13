@@ -1,0 +1,10 @@
+datasets==2.13.1
+evaluate==0.4.0
+jupyterlab
+numpy==1.25.1
+pandas==2.0.3
+ray==2.5.1
+requests==2.31.0
+torch==2.0.1
+transformers==4.28.1
+wandb==0.15.5
