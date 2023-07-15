@@ -9,7 +9,7 @@ ARG USER_GID
 ENV SHELL=/bin/bash
 ENV USER_HOME=/home/$USER_NAME
 ENV PROJECT_HOME=$USER_HOME/project
-ENV PATH="$PROJECT_HOME/bin:$PATH"
+ENV PATH="$USER_HOME/.local/bin:$PATH"
 
 # Create non-root user
 RUN groupadd --gid $USER_GID $USER_NAME \
