@@ -9,6 +9,7 @@ ARG USER_GID
 ENV SHELL=/bin/bash
 ENV USER_HOME=/home/$USER_NAME
 ENV PROJECT_HOME=$USER_HOME/project
+ENV PATH="$PROJECT_HOME/bin:$PATH"
 
 # Create non-root user
 RUN groupadd --gid $USER_GID $USER_NAME \
@@ -39,5 +40,5 @@ RUN pip3 install -r requirements.txt
 
 # Pull fastchat
 RUN git clone https://github.com/lm-sys/FastChat.git
-RUN cd FastChat && pip3 install -e .
+RUN cd FastChat && pip3 install --upgrade pip && pip3 install -e .
 
