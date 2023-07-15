@@ -1,7 +1,7 @@
 datasets==2.13.1
 evaluate==0.4.0
 jupyterlab
-numpy==1.25.1
+numpy==1.24.4
 pandas==2.0.3
 ray==2.5.1
 requests==2.31.0
