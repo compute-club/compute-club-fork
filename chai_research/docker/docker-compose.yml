@@ -3,7 +3,7 @@ services:
   python:
     # platform: linux/amd64
     build:
-      context: chai_research/docker
+      context: ./
       args:
         - USER_NAME=chai_research
         - USER_UID=1000
