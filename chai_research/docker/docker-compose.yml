@@ -1,17 +1,17 @@
 version: '3'
 services:
-  chai_research:
+  jupyter:
     # platform: linux/amd64
     build:
       context: ./
       args:
-        - USER_NAME=chai_research
+        - USER_NAME=jupyter
         - USER_UID=1000
         - USER_GID=1000
     ports:
       - "127.0.0.1:8888:8888"
     volumes:
-      - ../:/home/chai_research/project/chai_research
+      - ../:/home/jupyter/project/chai_research
     command: [
       "jupyter", "lab",
       "--ip", "0.0.0.0",
