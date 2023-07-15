@@ -40,5 +40,5 @@ RUN pip3 install -r requirements.txt
 
 # Pull fastchat
 RUN git clone https://github.com/lm-sys/FastChat.git
-RUN cd FastChat && pip3 install --upgrade pip && pip3 install -e .
+RUN cd FastChat && pip3 install --upgrade pip && pip3 install .
 
