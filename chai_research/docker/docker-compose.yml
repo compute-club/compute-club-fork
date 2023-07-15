@@ -9,7 +9,7 @@ services:
         - USER_UID=1000
         - USER_GID=1000
     ports:
-      - "${HOST_IP}:8888:8888"
+      - "8888:8888"
     volumes:
       - ../:/home/chai_research/project/chai_research
     command: [
