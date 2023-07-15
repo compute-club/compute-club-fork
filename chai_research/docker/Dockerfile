@@ -15,6 +15,7 @@ RUN groupadd --gid $USER_GID $USER_NAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USER_NAME
 
 # Install OS packages
+RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install tzdata
 RUN apt-get update -y  \
     && apt-get install -yq --no-install-recommends \
         python3.9 \
