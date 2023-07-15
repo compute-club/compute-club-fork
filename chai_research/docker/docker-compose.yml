@@ -1,6 +1,6 @@
 version: '3'
 services:
-  python:
+  chai_research:
     # platform: linux/amd64
     build:
       context: ./
