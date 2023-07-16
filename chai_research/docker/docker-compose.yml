@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   jupyter:
-    image: chai_research_jupyter
+    image: chai-research-jupyter
     build:
       context: .
       dockerfile: Dockerfile
