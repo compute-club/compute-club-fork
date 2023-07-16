@@ -1,7 +1,7 @@
-version: "3.7"
+version: "3.9"
 services:
   jupyter:
-    # platform: linux/amd64
+    image: nvidia/cuda:11.7.1-runtime-ubuntu20.04
     build:
       context: .
       dockerfile: Dockerfile
@@ -13,7 +13,6 @@ services:
       - "127.0.0.1:8888:8888"
     volumes:
       - ../:/home/jupyter/project/chai_research
-    image: nvidia-smi
     entrypoint: [
       "jupyter", "lab",
       "--ip", "0.0.0.0",
@@ -27,4 +26,3 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
-
