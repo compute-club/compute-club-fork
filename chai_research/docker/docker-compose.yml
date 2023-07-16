@@ -1,9 +1,10 @@
-version: '3'
+version: "3.9"
 services:
   jupyter:
     # platform: linux/amd64
     build:
-      context: ./
+      context: .
+      dockerfile: Dockerfile
       args:
         - USER_NAME=jupyter
         - USER_UID=1000
@@ -12,12 +13,6 @@ services:
       - "127.0.0.1:8888:8888"
     volumes:
       - ../:/home/jupyter/project/chai_research
-    command: [
-      "jupyter", "lab",
-      "--ip", "0.0.0.0",
-      "--port", "8888",
-      "--no-browser"
-    ]
     deploy:
       resources:
         reservations:
@@ -25,3 +20,9 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
+    entrypoint: [
+      "jupyter", "lab",
+      "--ip", "0.0.0.0",
+      "--port", "8888",
+      "--no-browser"
+    ]
