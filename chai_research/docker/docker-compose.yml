@@ -16,7 +16,7 @@ services:
     deploy:
       resources:
         reservations:
-          devices:
+          device:
             - driver: nvidia
               count: all
               capabilities: [gpu]
