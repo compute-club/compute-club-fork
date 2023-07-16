@@ -1,6 +1,7 @@
 version: "3.9"
 services:
   jupyter:
+    image: chai_research_jupyter
     build:
       context: .
       dockerfile: Dockerfile
@@ -8,7 +9,6 @@ services:
         - USER_NAME=jupyter
         - USER_UID=1000
         - USER_GID=1000
-    image: nvidia/cuda:11.7.1-runtime-ubuntu20.04
     ports:
       - "127.0.0.1:8888:8888"
     volumes:
