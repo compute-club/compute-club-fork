@@ -13,16 +13,18 @@ services:
       - "127.0.0.1:8888:8888"
     volumes:
       - ../:/home/jupyter/project/chai_research
-    deploy:
-      resources:
-        reservations:
-          device:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+    image: nvidia-smi
     entrypoint: [
       "jupyter", "lab",
       "--ip", "0.0.0.0",
       "--port", "8888",
       "--no-browser"
     ]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
