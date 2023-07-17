@@ -36,7 +36,8 @@ COPY requirements.txt $PROJECT_HOME
 USER $USER_NAME
 
 # Install project dependencies
-RUN pip3 install -r requirements.txt
+RUN pip3 install -q torch==1.9.0+cu111 torchvision==0.10.0+cu111 torchaudio==0.9.0 -f https://download.pytorch.org/whl/torch_stable.html
+RUN pip3 install -q -r requirements.txt
 
 # Pull fastchat
 RUN git clone https://github.com/lm-sys/FastChat.git
