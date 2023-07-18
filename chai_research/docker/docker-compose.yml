@@ -1,14 +1,14 @@
 version: "3.9"
 services:
   jupyter:
-    image: chai-research-jupyter
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        - USER_NAME=jupyter
-        - USER_UID=1000
-        - USER_GID=1000
+    image: lwk723/compute-club:chai_research
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    #   args:
+    #     - USER_NAME=jupyter
+    #     - USER_UID=1000
+    #     - USER_GID=1000
     ports:
       - "127.0.0.1:8888:8888"
     volumes:

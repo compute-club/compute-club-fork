@@ -10,6 +10,7 @@ ENV SHELL=/bin/bash
 ENV USER_HOME=/home/$USER_NAME
 ENV PROJECT_HOME=$USER_HOME/project
 ENV PATH="$USER_HOME/.local/bin:$PATH"
+ENV CUDA_VISIBLE_DEVICES=1
 
 # Create non-root user
 RUN groupadd --gid $USER_GID $USER_NAME \
