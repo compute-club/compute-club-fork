@@ -15,7 +15,7 @@ from transformers.data import DataCollatorForLanguageModeling
 import logging
 import wandb
 
-# wandb.login()
+wandb.login()
 
 start = time.time()
 
@@ -81,4 +81,4 @@ trainer = Trainer(
 
 trainer.train()
 
-# wandb.finish()
+wandb.finish()
