@@ -42,7 +42,7 @@ def tokenize_function(examples):
 
 
 print("Splitting and tokenizing dataset")
-tokenized_datasets = current_dataset.map(tokenize_function, batched=True)
+tokenized_datasets = current_dataset.map(tokenize_function, batched=True, num_proc=os.cpu_count())
 small_eval_dataset = tokenized_datasets["validation"].select(range(100))
 
 print("Preparing training arguments")

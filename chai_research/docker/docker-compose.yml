@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  jupyter:
+    image: lwk723/compute-club:chai_research
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    #   args:
+    #     - USER_NAME=jupyter
+    #     - USER_UID=1000
+    #     - USER_GID=1000
+    ports:
+      - "127.0.0.1:8888:8888"
+    volumes:
+      - ../:/home/jupyter/project/chai_research
+    entrypoint: [
+      "jupyter", "lab",
+      "--ip", "0.0.0.0",
+      "--port", "8888",
+      "--no-browser"
+    ]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
