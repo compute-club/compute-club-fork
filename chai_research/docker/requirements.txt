@@ -2,6 +2,7 @@ anthropic==0.3.2
 datasets==2.13.1
 evaluate==0.4.0
 jupyterlab
+jupyterlab_nvdashboard
 markdown-it-py<3.0.0,>=1.0.0
 numpy==1.24.4
 openai==0.27.8
