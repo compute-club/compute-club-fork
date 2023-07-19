@@ -40,6 +40,11 @@ USER $USER_NAME
 RUN pip3 install -q torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 RUN pip3 install -q -r requirements.txt
 
+# Copy chai research train files so we can run their training examples with this dockerfile
+COPY scripts/train/explorations/lmgym/clm_models/train.py $PROJECT_HOME/train.py
+COPY run_script.sh $PROJECT_HOME
+
+
 # Pull fastchat
 RUN git clone https://github.com/lm-sys/FastChat.git
 RUN cd FastChat && pip3 install --upgrade pip && pip3 install .
