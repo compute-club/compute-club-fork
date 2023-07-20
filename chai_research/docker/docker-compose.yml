@@ -26,17 +26,17 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
-  cli:
-    image: lwk723/compute-club:chai_research
-    ports:
-      - "127.0.0.1:8888:8888"
-    volumes:
-      - ../:/home/jupyter/project/chai_research
-    command: ["tail", "-f", "/dev/null"]
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+  # cli:
+  #   image: lwk723/compute-club:chai_research
+  #   ports:
+  #     - "127.0.0.1:8888:8888"
+  #   volumes:
+  #     - ../:/home/jupyter/project/chai_research
+  #   command: ["tail", "-f", "/dev/null"]
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: all
+  #             capabilities: [gpu]
