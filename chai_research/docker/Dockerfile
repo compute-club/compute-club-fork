@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.7.1-runtime-ubuntu20.04
+FROM nvidia/cuda:11.7.1-devel-ubuntu20.04
 
 # Define arguments
 ARG USER_NAME
@@ -10,7 +10,6 @@ ENV SHELL=/bin/bash
 ENV USER_HOME=/home/$USER_NAME
 ENV PROJECT_HOME=$USER_HOME/project
 ENV PATH="$USER_HOME/.local/bin:$PATH"
-ENV CUDA_VISIBLE_DEVICES=1
 
 # Create non-root user
 RUN groupadd --gid $USER_GID $USER_NAME \
@@ -43,3 +42,7 @@ RUN pip3 install -q -r requirements.txt
 # Pull fastchat
 RUN git clone https://github.com/lm-sys/FastChat.git
 RUN cd FastChat && pip3 install --upgrade pip && pip3 install .
+
+# Clone lmgym repository and set PYTHONPATH
+RUN git clone https://github.com/chai-research/lmgym.git
+ENV PYTHONPATH $PROJECT_HOME/lmgym
