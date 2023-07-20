@@ -24,6 +24,7 @@ RUN apt-get update -y  \
         python3.9-distutils \
         python3-pip \
         curl \
+        wget \
         git \
         htop
 
