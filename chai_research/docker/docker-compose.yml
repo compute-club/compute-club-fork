@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3.3"
 services:
   jupyter:
     image: lwk723/compute-club:chai_research
@@ -26,13 +26,20 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
-  cli:
-    image: lwk723/compute-club:chai_research
+  lmgym_train:
+    image: mrich388/compute-club:chai_research
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+          - USER_NAME=jupyter
+          - USER_UID=1000
+          - USER_GID=1000
     ports:
       - "127.0.0.1:8888:8888"
     volumes:
       - ../:/home/jupyter/project/chai_research
-    command: ["tail", "-f", "/dev/null"]
+    command: ["bash", "-c", "python3 lmgym/clm_models/train.py"]
     deploy:
       resources:
         reservations:
