@@ -13,6 +13,9 @@ seaborn = "^0.12.2"
 gensim = "^4.3.1"
 spacy = "^3.6.0"
 pyldavis = "^3.4.1"
+nomic = "^2.0.5"
+datasets = "^2.13.1"
+alt-profanity-check = "^1.2.2"
 
 
 [tool.poetry.group.dev.dependencies]
