@@ -9,12 +9,18 @@ from clm_models.callbacks.callbacks import get_callbacks
 from clm_models.custom import losses as custom_loss
 from clm_models.custom import training_utils as utils
 
+from reward_models.config import WANDB_AUTH_TOKEN
+import wandb
+
+
 check_min_version("4.24.0")
 require_version("datasets>=1.8.0")
 
 logger = logging.getLogger(__name__)
 
+
 def main():
+    wandb.login(key=WANDB_AUTH_TOKEN)
     model_args, data_args, train_args = utils.get_parsed_arguments()
     utils.setup_logging(train_args.get_process_log_level())
     utils.log_training_environment_info(train_args)
