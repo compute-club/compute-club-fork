@@ -13,38 +13,20 @@ services:
       - "127.0.0.1:8888:8888"
     volumes:
       - ../:/home/jupyter/project/chai_research
-    entrypoint: [
-      "jupyter", "lab",
-      "--ip", "0.0.0.0",
-      "--port", "8888",
-      "--no-browser"
-    ]
+    entrypoint:
+      [
+        "jupyter",
+        "lab",
+        "--ip",
+        "0.0.0.0",
+        "--port",
+        "8888",
+        "--no-browser"
+      ]
     deploy:
       resources:
         reservations:
           devices:
             - driver: nvidia
               count: all
-              capabilities: [gpu]
-  lmgym_train:
-    image: mrich388/compute-club:chai_research
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-          - USER_NAME=jupyter
-          - USER_UID=1000
-          - USER_GID=1000
-    ports:
-      - "127.0.0.1:8889:8888"
-    volumes:
-      - ../:/home/jupyter/project/chai_research
-    command: ["/bin/bash", "scripts/train/explorations/lmgym_files/hh_demo.sh"]
-    #command: ["bash", "-c", "deepspeed lmgym/clm_models/train.py --output_dir=/home/ubuntu/compute-club-fork/chai_research/scripts/train/explorations/chai_train_runs --model_name_or_path EleutherAI/gpt-j-6b --tokenizer_name EleutherAI/gpt-j-6b --dataset_name AlekseyKorshuk/hh-lmgym-demo --train_to_probs False --do_train  --do_eval --logging_strategy steps --evaluation_strategy steps --eval_steps 2100 --save_strategy epoch --save_steps 1 --logging_steps 250 --logging_first_step --report_to all --overwrite_output_dir --per_device_train_batch_size 4 --gradient_accumulation_steps 1 --gradient_checkpointing False --max_eval_samples 500 --num_train_epochs 4 --eval_first_step False  --learning_rate 1e-6 --fp16 --seed 99 --validation_split_percentage 1 --remove_unused_columns False --deepspeed ./deepspeed_configs/ds_config_stage_3.json --clean_enabled False --block_size 512"]
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+              capabilities: [ gpu ]

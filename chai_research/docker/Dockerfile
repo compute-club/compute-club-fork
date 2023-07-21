@@ -20,13 +20,13 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
 RUN apt-get update -y  \
     && apt-get install -yq --no-install-recommends \
-        python3.9 \
-        python3.9-distutils \
-        python3-pip \
-        curl \
-        wget \
-        git \
-        htop
+    python3.9 \
+    python3.9-distutils \
+    python3-pip \
+    curl \
+    wget \
+    git \
+    htop
 
 # Set working directory
 WORKDIR $PROJECT_HOME
@@ -43,7 +43,3 @@ RUN pip3 install -q -r requirements.txt
 # Pull fastchat
 RUN git clone https://github.com/lm-sys/FastChat.git
 RUN cd FastChat && pip3 install --upgrade pip && pip3 install .
-
-# Clone lmgym repository and set PYTHONPATH
-RUN git clone https://github.com/chai-research/lmgym.git
-ENV PYTHONPATH $PROJECT_HOME/lmgym
