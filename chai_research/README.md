@@ -6,6 +6,7 @@
 4. `$ touch .env`
 5. Copy the values from `.env.template` into the `.env` file you just created, and add the necessary values
 6. Build & run the container: `sudo docker compose up --build`
+7. If you stop the container and want to start again, it's best to run `$ sudo docker compose down` before building & starting again.
 
 At this point, the training should begin. You will receive URLs to the WANDB and HuggingFace pages to track the progress of this training run. They will be logged to the console, and will look like this: 
 
