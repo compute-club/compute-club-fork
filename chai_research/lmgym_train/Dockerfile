@@ -1,0 +1,52 @@
+FROM ghcr.io/coreweave/ml-containers/torch:ceeb8c2-nccl-cuda12.0.1-nccl2.18.1-1-torch2.0.1-vision0.15.2-audio2.0.2
+
+# Define arguments
+ARG USER_NAME
+ARG USER_UID
+ARG USER_GID
+
+# Configure environment
+ENV SHELL=/bin/bash
+ENV USER_HOME=/home/$USER_NAME
+ENV PROJECT_HOME=$USER_HOME/project
+ENV PATH="$USER_HOME/.local/bin:$PATH"
+
+# Create non-root user
+RUN groupadd --gid $USER_GID $USER_NAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USER_NAME
+
+# Install OS packages
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC
+RUN apt-get update -y  \
+    && apt-get install -yq --no-install-recommends \
+        python3.9 \
+        python3.9-distutils \
+        python3-pip \
+        curl \
+        wget \
+        git \
+        htop
+
+# Set working directory
+WORKDIR $PROJECT_HOME
+
+# Copy files with root user
+COPY ./lmgym_train/requirements.txt $PROJECT_HOME
+COPY ./lmgym_train/train $PROJECT_HOME/train
+
+# Make script executable while still root user
+RUN chmod +x $PROJECT_HOME/train/explorations/lmgym/clm_models/experiments/hh/hh_demo.sh
+
+# Change ownership of the project directory
+RUN chown -R $USER_UID:$USER_GID $PROJECT_HOME
+
+# Set user
+USER $USER_NAME
+
+# Install project dependencies
+RUN pip3 install -q -r requirements.txt
+
+# Clone lmgym repository and set PYTHONPATH
+RUN git clone https://github.com/chai-research/lmgym.git $PROJECT_HOME/lmgym
+ENV PYTHONPATH $PROJECT_HOME/lmgym:$PROJECT_HOME/lmgym_train/train/explorations/lmgym/
