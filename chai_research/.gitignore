@@ -2,4 +2,6 @@ data
 scripts/train/explorations/logs
 *wandb*
 *.DS_Store
-.env
+*.env
+*__pycache__*
+*.pyc

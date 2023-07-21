@@ -14,7 +14,6 @@ require_version("datasets>=1.8.0")
 
 logger = logging.getLogger(__name__)
 
-
 def main():
     model_args, data_args, train_args = utils.get_parsed_arguments()
     utils.setup_logging(train_args.get_process_log_level())

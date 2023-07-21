@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.7.1-devel-ubuntu20.04
+FROM ghcr.io/coreweave/ml-containers/torch:ceeb8c2-nccl-cuda12.0.1-nccl2.18.1-1-torch2.0.1-vision0.15.2-audio2.0.2
 
 # Define arguments
 ARG USER_NAME
@@ -45,9 +45,8 @@ RUN chown -R $USER_UID:$USER_GID $PROJECT_HOME
 USER $USER_NAME
 
 # Install project dependencies
-RUN pip3 install -q torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 RUN pip3 install -q -r requirements.txt
 
 # Clone lmgym repository and set PYTHONPATH
-RUN git clone https://github.com/chai-research/lmgym.git $PROJECT_HOME/lmgym
-ENV PYTHONPATH $PROJECT_HOME/lmgym:$PROJECT_HOME/lmgym_train/train/explorations/lmgym/
+# RUN git clone https://github.com/chai-research/lmgym.git $PROJECT_HOME/lmgym
+# ENV PYTHONPATH $PROJECT_HOME/lmgym:$PROJECT_HOME/lmgym_train/train/explorations/lmgym/

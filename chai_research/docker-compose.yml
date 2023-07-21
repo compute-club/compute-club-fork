@@ -24,8 +24,5 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
-    environment: 
-      HUGGINGFACE_TOKEN: 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
-      WANDB_AUTH_TOKEN: 0691b022eeb0c6fa947d23ea3c355684d11310af
-    #env_file:
-    #  - .env
+    env_file:
+     - .env

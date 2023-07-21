@@ -13,7 +13,7 @@ deepspeed ./lmgym_train/train/explorations/lmgym/clm_models/train.py \
   --logging_steps 250 \
   --logging_first_step \
   --report_to all \
-  --output_dir ./checkpoints/gptj_hh \
+  --output_dir ./lmgym_train/train/checkpoints/gptj_hh \
   --overwrite_output_dir \
   --per_device_train_batch_size 4 \
   --gradient_accumulation_steps 1 \
@@ -28,5 +28,4 @@ deepspeed ./lmgym_train/train/explorations/lmgym/clm_models/train.py \
   --remove_unused_columns False \
   --deepspeed ./lmgym_train/train/explorations/lmgym/clm_models/deepspeed_configs/ds_config_stage_3.json \
   --clean_enabled False \
-  --block_size 512 \
-  --use_auth_token False
+  --block_size 512

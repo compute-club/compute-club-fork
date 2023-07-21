@@ -9,6 +9,8 @@ import torch
 from reward_models.custom import custom_callbacks as cb
 from reward_models.config import HF_TOKEN
 
+print('HF TOKEN: ', HF_TOKEN)
+
 
 RANK = int(os.environ.get('LOCAL_RANK', 0))
 print('running process rank {}'.format(RANK))

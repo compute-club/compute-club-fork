@@ -25,6 +25,8 @@ from clm_models.custom.model_arguments import (
     DataTrainingArguments
 )
 
+from reward_models.config import HF_TOKEN
+
 logger = logging.getLogger(__name__)
 accuracy_metric = evaluate.load("accuracy")
 
@@ -81,7 +83,7 @@ def get_raw_dataset(data_args, model_args):
         data_args.dataset_name,
         data_args.dataset_config_name,
         cache_dir=model_args.cache_dir,
-        use_auth_token=True,
+        use_auth_token=HF_TOKEN,
     )
     if "validation" not in raw_datasets.keys():
         raw_datasets["validation"] = load_dataset(
@@ -89,14 +91,14 @@ def get_raw_dataset(data_args, model_args):
             data_args.dataset_config_name,
             split=f"train[:{data_args.validation_split_percentage}%]",
             cache_dir=model_args.cache_dir,
-            use_auth_token=True,
+            use_auth_token=HF_TOKEN,
         )
         raw_datasets["train"] = load_dataset(
             data_args.dataset_name,
             data_args.dataset_config_name,
             split=f"train[{data_args.validation_split_percentage}%:]",
             cache_dir=model_args.cache_dir,
-            use_auth_token=True,
+            use_auth_token=HF_TOKEN,
         )
     return raw_datasets
 
@@ -105,7 +107,7 @@ def get_model_config(model_args):
     config_kwargs = {
         "cache_dir": model_args.cache_dir,
         "revision": model_args.model_revision,
-        "use_auth_token": True,
+        "use_auth_token": HF_TOKEN,
     }
     if model_args.config_name:
         config = AutoConfig.from_pretrained(model_args.config_name, **config_kwargs)
@@ -126,7 +128,7 @@ def get_tokenizer(model_args):
         "cache_dir": model_args.cache_dir,
         "use_fast": model_args.use_fast_tokenizer,
         "revision": model_args.model_revision,
-        "use_auth_token": True,
+        "use_auth_token": HF_TOKEN,
         "padding_side": "left",
         "truncation_side": "left",
     }
@@ -152,7 +154,7 @@ def get_base_model_for_finetuning(model_args, model_config):
             config=model_config,
             cache_dir=model_args.cache_dir,
             revision=model_args.model_revision,
-            use_auth_token=True,
+            use_auth_token=HF_TOKEN,
         )
     else:
         model = AutoModelForCausalLM.from_config(model_config)
