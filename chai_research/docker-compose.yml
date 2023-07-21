@@ -1,0 +1,26 @@
+version: "3.8"
+services:
+  lmgym_train:
+    build:
+      context: .
+      dockerfile: lmgym_train/Dockerfile
+      args:
+          - USER_NAME=trainer
+          - USER_UID=1000
+          - USER_GID=1000
+    ports:
+      - "127.0.0.1:8889:8888"
+    volumes:
+      # - ./:/home/trainer/project
+      - ./:/home/trainer/project
+      - type: bind
+        source: ./lmgym_train/train/explorations/lmgym_files/
+        target: /home/trainer/project/train/explorations/lmgym_files/
+    command: ["/bin/bash", "train/explorations/lmgym_files/hh_demo.sh"]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
