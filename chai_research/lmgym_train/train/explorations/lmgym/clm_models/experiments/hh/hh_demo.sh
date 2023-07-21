@@ -1,4 +1,4 @@
-deepspeed train/explorations/lmgym_files/train.py \
+deepspeed ./lmgym_train/train/explorations/lmgym/clm_models/train.py \
   --model_name_or_path EleutherAI/gpt-j-6b \
   --tokenizer_name EleutherAI/gpt-j-6b \
   --dataset_name AlekseyKorshuk/hh-lmgym-demo \
@@ -26,6 +26,7 @@ deepspeed train/explorations/lmgym_files/train.py \
   --seed 99 \
   --validation_split_percentage 1 \
   --remove_unused_columns False \
-  --deepspeed ./deepspeed_configs/ds_config_stage_3.json \
+  --deepspeed ./lmgym_train/train/explorations/lmgym/clm_models/deepspeed_configs/ds_config_stage_3.json \
   --clean_enabled False \
-  --block_size 512
+  --block_size 512 \
+  --use_auth_token False

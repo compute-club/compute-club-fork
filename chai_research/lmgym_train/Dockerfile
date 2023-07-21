@@ -31,15 +31,14 @@ RUN apt-get update -y  \
 # Set working directory
 WORKDIR $PROJECT_HOME
 
-# copy files with root user
+# Copy files with root user
 COPY ./lmgym_train/requirements.txt $PROJECT_HOME
 COPY ./lmgym_train/train $PROJECT_HOME/train
 
 # Make script executable while still root user
-RUN chmod +x $PROJECT_HOME/train/explorations/lmgym_files/hh_demo.sh
-RUN chmod +x $PROJECT_HOME/train/explorations/lmgym_files/train.py
+RUN chmod +x $PROJECT_HOME/train/explorations/lmgym/clm_models/experiments/hh/hh_demo.sh
 
-# change ownership of the project directory
+# Change ownership of the project directory
 RUN chown -R $USER_UID:$USER_GID $PROJECT_HOME
 
 # Set user
@@ -50,6 +49,5 @@ RUN pip3 install -q torch torchvision torchaudio --index-url https://download.py
 RUN pip3 install -q -r requirements.txt
 
 # Clone lmgym repository and set PYTHONPATH
-RUN git clone https://github.com/chai-research/lmgym.git
-ENV PYTHONPATH $PROJECT_HOME/lmgym
-
+RUN git clone https://github.com/chai-research/lmgym.git $PROJECT_HOME/lmgym
+ENV PYTHONPATH $PROJECT_HOME/lmgym:$PROJECT_HOME/lmgym_train/train/explorations/lmgym/

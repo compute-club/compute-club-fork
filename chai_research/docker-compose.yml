@@ -14,9 +14,9 @@ services:
       # - ./:/home/trainer/project
       - ./:/home/trainer/project
       - type: bind
-        source: ./lmgym_train/train/explorations/lmgym_files/
-        target: /home/trainer/project/train/explorations/lmgym_files/
-    command: ["/bin/bash", "train/explorations/lmgym_files/hh_demo.sh"]
+        source: ./lmgym_train/train/explorations/lmgym/
+        target: /home/trainer/project/train/explorations/lmgym/
+    command: ["/bin/bash", "/home/trainer/project/lmgym_train/train/explorations/lmgym/clm_models/experiments/hh/hh_demo.sh"]
     deploy:
       resources:
         reservations:
@@ -24,3 +24,8 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
+    environment: 
+      HUGGINGFACE_TOKEN: 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
+      WANDB_AUTH_TOKEN: 0691b022eeb0c6fa947d23ea3c355684d11310af
+    #env_file:
+    #  - .env
