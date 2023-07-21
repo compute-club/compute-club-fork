@@ -3,5 +3,5 @@ scripts/train/explorations/logs
 *wandb*
 *.DS_Store
 *.env
-*__pycache__*
+__pycache__/
 *.pyc
