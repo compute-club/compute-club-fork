@@ -16,8 +16,8 @@ deepspeed ./lmgym_train/train/explorations/lmgym/clm_models/train.py \
   --output_dir ./lmgym_train/train/checkpoints/gptj_hh \
   --overwrite_output_dir \
   --per_device_train_batch_size 4 \
-  --gradient_accumulation_steps 1 \
-  --gradient_checkpointing False \
+  --gradient_accumulation_steps 4 \
+  --gradient_checkpointing True \
   --max_eval_samples 500 \
   --num_train_epochs 4 \
   --eval_first_step False \
@@ -26,6 +26,6 @@ deepspeed ./lmgym_train/train/explorations/lmgym/clm_models/train.py \
   --seed 99 \
   --validation_split_percentage 1 \
   --remove_unused_columns False \
-  --deepspeed ./lmgym_train/train/explorations/lmgym/clm_models/deepspeed_configs/ds_config_stage_3.json \
+  --deepspeed ./lmgym_train/train/explorations/lmgym/clm_models/deepspeed_configs/ds_config_small.json \
   --clean_enabled False \
   --block_size 512

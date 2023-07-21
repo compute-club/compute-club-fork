@@ -48,5 +48,5 @@ USER $USER_NAME
 RUN pip3 install -q -r requirements.txt
 
 # Clone lmgym repository and set PYTHONPATH
-# RUN git clone https://github.com/chai-research/lmgym.git $PROJECT_HOME/lmgym
-# ENV PYTHONPATH $PROJECT_HOME/lmgym:$PROJECT_HOME/lmgym_train/train/explorations/lmgym/
+RUN git clone https://github.com/chai-research/lmgym.git $PROJECT_HOME/lmgym
+ENV PYTHONPATH $PROJECT_HOME/lmgym:$PROJECT_HOME/lmgym_train/train/explorations/lmgym/
