@@ -15,15 +15,26 @@ pip install -r requirements.txt
 
 3. Then export project to python path:
 ```
-export PYTHONPATH=$PATH_TO_REPO (ex: /home/ubuntu/lmgym)
+export PYTHONPATH=$PATH_TO_REPO (ex: /home/ubuntu/compute-club-fork/chai_research/lmgym)
 ```
 
 4. `$ touch .env` and copy the variables from `.env.template` along with the correct values
 5. `$ cd clm_models`
 6. `$ pip install -r requirements.txt`
+
+At this point, you can verify that we're using the correct `torch` version:
+```
+$ python
+$ import torch
+$ torch.__version__
+```
+
+The result should be `'2.0.1+cu118'`. If it isn't, then install the correct version: `$ pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118`
 7. `$ huggingface-cli login`
-8. `$ chmod +x /home/ubuntu/lmgym/clm_models/experiments/hh/hh_demo.sh`
-9. `$ experiments/hh/hh_demo.sh`
+8. `$ chmod +x /home/ubuntu/compute-club-fork/chai_research/lmgym/clm_models/experiments/hh/hh_demo.sh`
+9. `$ experiments/hh/hh_demo.sh` 
+
+When running the last command for the last time, you'll be prompted to enter your WANDB token (or have the option of also disabling WANDB logging).
 
 
 # Language Model Gym
