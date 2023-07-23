@@ -15,7 +15,7 @@ deepspeed train.py \
   --report_to all \
   --output_dir ./checkpoints/gptj_hh \
   --overwrite_output_dir \
-  --per_device_train_batch_size 1 \
+  --per_device_train_batch_size 32 \
   --gradient_accumulation_steps 4 \
   --gradient_checkpointing True \
   --max_eval_samples 500 \
