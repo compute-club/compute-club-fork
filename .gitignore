@@ -2,5 +2,5 @@
 *.venv/
 *ipynb_checkpoints/
 *filtered_datasets/*
-*models/*
+*/models/*
 *.bin
