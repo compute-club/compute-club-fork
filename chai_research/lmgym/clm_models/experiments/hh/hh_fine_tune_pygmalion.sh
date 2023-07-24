@@ -1,6 +1,6 @@
-deepspeed ./lmgym_train/train/explorations/lmgym/clm_models/train.py \
-  --model_name_or_path PygmalionAI/pygmalion-6b \
-  --tokenizer_name PygmalionAI/pygmalion-6b \
+deepspeed train.py \
+  --model_name_or_path EleutherAI/gpt-j-6b \
+  --tokenizer_name EleutherAI/gpt-j-6b \
   --dataset_name AlekseyKorshuk/hh-lmgym-demo \
   --train_to_probs False \
   --do_train \
@@ -13,9 +13,9 @@ deepspeed ./lmgym_train/train/explorations/lmgym/clm_models/train.py \
   --logging_steps 250 \
   --logging_first_step \
   --report_to all \
-  --output_dir ./lmgym_train/train/checkpoints/gptj_hh \
+  --output_dir ./checkpoints/gptj_hh \
   --overwrite_output_dir \
-  --per_device_train_batch_size 4 \
+  --per_device_train_batch_size 1 \
   --gradient_accumulation_steps 4 \
   --gradient_checkpointing True \
   --max_eval_samples 500 \
@@ -26,6 +26,6 @@ deepspeed ./lmgym_train/train/explorations/lmgym/clm_models/train.py \
   --seed 99 \
   --validation_split_percentage 1 \
   --remove_unused_columns False \
-  --deepspeed ./lmgym_train/train/explorations/lmgym/clm_models/deepspeed_configs/ds_config_small.json \
+  --deepspeed ./deepspeed_configs/ds_config_small.json \
   --clean_enabled False \
   --block_size 512

@@ -4,6 +4,7 @@ from transformers import Trainer, default_data_collator, set_seed
 from transformers.utils import check_min_version
 from transformers.utils.versions import require_version
 import torch
+import pdb
 
 from clm_models.callbacks.callbacks import get_callbacks
 from clm_models.custom import losses as custom_loss
@@ -53,6 +54,7 @@ def main():
 
     compute_metrics = utils.compute_metrics if train_args.do_eval else None
     logits_preprocessor = utils.preprocess_logits_for_metrics if train_args.do_eval else None
+    pdb.set_trace()
     trainer = trainer_cls(
         model=model,
         args=train_args,
