@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "filtering"
+version = "0.1.0"
+description = ""
+authors = ["Abdul Jamjoom <abduljamjoom@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11,<3.12"
+pybind11 = "^2.11.1"
+pandas = "^2.0.3"
+fasttext = {git = "https://github.com/cfculhane/fastText"}
+text-dedup = {git = "https://github.com/ChenghaoMou/text-dedup"}
+profanity-check = {git = "https://github.com/vzhou842/profanity-check"}
+scikit-learn = "^1.3.0"
+alt-profanity-check = "^1.3.0"
+
+[tool.poetry.group.dev.dependencies]
+jupyter = "^1.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
