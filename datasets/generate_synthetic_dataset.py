@@ -75,8 +75,8 @@ def main(config_path):
 
 
 
-    # output_dataset = output_dataset.shuffle(seed=42)
-    # output_dataset.push_to_hub(output_dataset_path)
+    output_dataset = output_dataset.shuffle(seed=42)
+    output_dataset.push_to_hub(output_dataset_path)
     # logger.info(output_dataset)
 
 

@@ -4,20 +4,25 @@ import openai
 import random
 from tqdm import tqdm
 import numpy as np
+import json
 import os
 from dotenv import load_dotenv
 load_dotenv()
 
 from datasets import Dataset, load_from_disk
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
-# from chat_data_pipeline.pipeline import logger
-# from chat_data_pipeline import utils
-# from chat_data_pipeline.minhash_deduplication import deduplicate
-
 random_verb = ['eating', 'playing', 'sleeping', 'walking', 'running', 'drinking', 'singing', 'dancing', 'talking']
 random_modifier = ['together', 'outside', 'at night', 'in the morning', 'in the afternoon', 'in the evening', 'at the park', 'at the zoo']
+
+import pandas as pd
+
+def group_by_key(list_of_dicts):
+    df = pd.DataFrame(list_of_dicts)
+    result_dict = df.to_dict('list')
+    return result_dict
 
 
 class DatasetGenerator:
@@ -33,21 +38,13 @@ class DatasetGenerator:
         self.config = config
         self.verbose = verbose
 
-    # def run(self):
-    #     # self._clean_dataset()
-    #     # self._filter_dataset()
-    #     # if self.deduplication_config.get("do_deduplication", False):
-    #     #     self._deduplicate_dataset()
-    #     # return self.dataset
-    #     asyncio.run(self.generate_function(self.config., convo_length))
-
     def run(self):
         min_convo_length = self.config['min_convo_length']
         max_convo_length = self.config['max_convo_length']
         num_samples = self.config['num_samples']
-        return asyncio.run(self.async_run(min_convo_length, max_convo_length, num_samples))
+        return asyncio.run(self._async_run(min_convo_length, max_convo_length, num_samples))
 
-    async def async_run(self, min_convo_length, max_convo_length, num_samples):
+    async def _async_run(self, min_convo_length, max_convo_length, num_samples):
         convo_lengths = np.arange(min_convo_length, max_convo_length + 1)
         num_buckets = len(convo_lengths)
 
@@ -61,8 +58,11 @@ class DatasetGenerator:
         # Create a progress bar
         pbar = tqdm(total=num_samples, desc="Generating synthetic conversations")
 
+        results = []
         for convo_length, n in zip(convo_lengths, samples_per_bucket):
-            await self.generate_convos_for_length(n, convo_length)
+            convos = await self._generate_convos_for_length(n, convo_length)
+            print('finished convos for length: ', convo_length)
+            results.extend(convos)
 
             # Update the progress bar
             pbar.update(n)
@@ -70,18 +70,18 @@ class DatasetGenerator:
         # Close the progress bar
         pbar.close()
 
-        return ['hello']
+        return Dataset.from_dict(group_by_key(results))
     
-    async def generate_convos_for_length(self, n, convo_length):
-        tasks = [self.generate_convo(convo_length) for _ in range(n)]
-        await asyncio.gather(*tasks)
+    async def _generate_convos_for_length(self, n, convo_length):
+        tasks = [self._generate_convo(convo_length) for _ in range(n)]
+        return await asyncio.gather(*tasks)
 
-    async def generate_convo(self, convo_length):
+    async def _generate_convo(self, convo_length):
         # print('dataset: ', list(self.dataset))
         samples = list(self.dataset)[:3]
-        print('samples: ', samples)
+        
         keys = list(samples[0].keys())
-        print('keys: ', keys)
+        
         keys_str = "[" + ", ".join(keys) + "]"
 
         samples_str = ""
@@ -99,12 +99,25 @@ class DatasetGenerator:
 
         Now generate a JSON object with {convo_length * 2} turns of conversation and the associated metadata. The conversation should include the following words: {word1} and {word2}.
         """
-        print('prompt: ', prompt)
-        completion = await openai.ChatCompletion.acreate(model="gpt-3.5-turbo", messages=[{"role": "user", "content": prompt}])
 
-        print('completion', completion)
-        # print(completion.choices[0].message.content)
-        return completion
+        return await self._gen_completion([{"role": "user", "content": prompt}])
+
+    def log_retry_attempt(retry_state):
+        if retry_state.outcome.failed:
+            exception = retry_state.outcome.exception()
+            # logger.warning("Retrying your_async_function due to %s. Retry attempt %s.", exception, retry_state.attempt_number)
+            print(f"Retrying _gen_completion due to {exception}. Retry attempt {retry_state.attempt_number}.")
+
+
+    @retry(
+            stop=stop_after_attempt(3), 
+            wait=wait_exponential(multiplier=1, min=4, max=10), 
+            retry=retry_if_exception_type(json.decoder.JSONDecodeError),
+            after=log_retry_attempt
+            )
+    async def _gen_completion(self, messages):
+        completion = await openai.ChatCompletion.acreate(model="gpt-3.5-turbo", messages=messages)
+        return json.loads(completion.choices[0].message.content)
 
 
     # def _clean_dataset(self):
