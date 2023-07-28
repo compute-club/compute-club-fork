@@ -1,4 +1,3 @@
-import shutil
 import asyncio
 import openai
 import random
@@ -7,23 +6,13 @@ import numpy as np
 import json
 import os
 from dotenv import load_dotenv
-load_dotenv()
-
 from datasets import Dataset, load_from_disk
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
+import utils
+
+load_dotenv()
 openai.api_key = os.environ["OPENAI_API_KEY"]
-
-random_verb = ['eating', 'playing', 'sleeping', 'walking', 'running', 'drinking', 'singing', 'dancing', 'talking']
-random_modifier = ['together', 'outside', 'at night', 'in the morning', 'in the afternoon', 'in the evening', 'at the park', 'at the zoo']
-
-import pandas as pd
-
-def group_by_key(list_of_dicts):
-    df = pd.DataFrame(list_of_dicts)
-    result_dict = df.to_dict('list')
-    return result_dict
-
 
 class DatasetGenerator:
     dataset: Dataset
@@ -52,7 +41,6 @@ class DatasetGenerator:
         extra_samples = num_samples % num_buckets
 
         samples_per_bucket = [base_samples_per_bucket + (1 if i < extra_samples else 0) for i in range(num_buckets)]
-
         print('samples per bucket: ', samples_per_bucket)
 
         # Create a progress bar
@@ -70,14 +58,13 @@ class DatasetGenerator:
         # Close the progress bar
         pbar.close()
 
-        return Dataset.from_dict(group_by_key(results))
+        return Dataset.from_dict(utils.group_by_key(results))
     
     async def _generate_convos_for_length(self, n, convo_length):
         tasks = [self._generate_convo(convo_length) for _ in range(n)]
         return await asyncio.gather(*tasks)
 
     async def _generate_convo(self, convo_length):
-        # print('dataset: ', list(self.dataset))
         samples = list(self.dataset)[:3]
         
         keys = list(samples[0].keys())
@@ -88,8 +75,8 @@ class DatasetGenerator:
         for i, obj in enumerate(samples, start=1):
             samples_str += f"Example {i}:\n{obj}\n\n"
 
-        word1 = random.choice(random_verb)
-        word2 = random.choice(random_modifier)
+        word1 = random.choice(utils.random_verb)
+        word2 = random.choice(utils.random_modifier)
 
         prompt = f"""
         Generate a sample conversation between two people. The conversation should be {convo_length * 2} turns long. Each conversation is also associated with some metadata. The entire conversation object is a JSON with the following keys: {keys_str}. 
@@ -105,7 +92,6 @@ class DatasetGenerator:
     def log_retry_attempt(retry_state):
         if retry_state.outcome.failed:
             exception = retry_state.outcome.exception()
-            # logger.warning("Retrying your_async_function due to %s. Retry attempt %s.", exception, retry_state.attempt_number)
             print(f"Retrying _gen_completion due to {exception}. Retry attempt {retry_state.attempt_number}.")
 
 
@@ -118,60 +104,4 @@ class DatasetGenerator:
     async def _gen_completion(self, messages):
         completion = await openai.ChatCompletion.acreate(model="gpt-3.5-turbo", messages=messages)
         return json.loads(completion.choices[0].message.content)
-
-
-    # def _clean_dataset(self):
-    #     if len(self.cleaners) > 0:
-    #         self.dataset = utils.run_cleaner(self.dataset, self.column_name, self.cleaners)
-    #     return self.dataset
-
-    # def _filter_dataset(self):
-    #     for filter_func in self.filters:
-    #         dataset_length = len(self.dataset)
-    #         ids = range(dataset_length)
-    #         self.dataset = self.dataset.add_column("ids", ids)
-    #         filtered_dataset = utils.run_filter(
-    #             dataset=self.dataset,
-    #             column_name=self.column_name,
-    #             filter_func=filter_func,
-    #             dry_run=self.dry_run
-    #         )
-    #         self._print_filter_logs(filtered_dataset, filter_func.__name__)
-    #         self.dataset = filtered_dataset.remove_columns("ids")
-
-    #     return self.dataset
-
-    # def _deduplicate_dataset(self):
-        dataset_length = len(self.dataset)
-        ids = range(dataset_length)
-        self.dataset = self.dataset.add_column("ids", ids)
-        # need to save to disk and load again, otherwise it is very slow
-        target_directory = "./.temp-dataset"
-        shutil.rmtree(target_directory, ignore_errors=True)
-        try:
-            self.dataset.save_to_disk(target_directory)
-        except PermissionError:
-            logger.info("Can not save dataset, nothing changed. Skipping...")
-        gc.collect()
-        self.dataset = load_from_disk(target_directory)
-        deduplicated_ds = deduplicate(
-            self.dataset,
-            column=self.column_name,
-            **self.deduplication_config.get("args", {})
-        )
-        self.dataset = deduplicated_ds.remove_columns("ids")
-        return self.dataset
-
-    # def _print_filter_logs(self, filtered_dataset, filter_name):
-    #     original_length = len(self.dataset)
-    #     filtered_length = len(filtered_dataset)
-    #     reduced_percent = round(100 * (original_length - filtered_length) / original_length, 2)
-    #     logger.info(
-    #         f'Filtered by {filter_name} on {self.column_name}:\n'
-    #         f'{reduced_percent}% = {original_length - filtered_length:,} samples reduced\n'
-    #         f'New dataset size: {filtered_length:,} rows'
-    #     )
-    #     if self.verbose:
-    #         utils.print_sample_dropped_examples(self.dataset, filtered_dataset, num_samples=10)
-
 
