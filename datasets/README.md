@@ -64,6 +64,7 @@ To find the dataset, navigate to `https://huggingface.co/datasets/output_dataset
 ## Implementation details
 - The prompt is seeded with randomly chosen words in an effort to increase dataset diversity
 - Sometimes parsing the JSON output from OpenAI fails, so we use an exponential backoff strategy to keep retrying
+- We generate conversations with length evenly distributed between `min_convo_length` and `max_convo_length`
 
 
 ## Contributing
