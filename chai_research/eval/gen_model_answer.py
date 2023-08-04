@@ -1,7 +1,8 @@
 import argparse
 import json
-
+import time
 import torch
+from tqdm import tqdm
 from transformers import AutoTokenizer, GPTJForCausalLM
 
 
@@ -22,6 +23,7 @@ def load_model(model_path, device):
     # TODO: set load_in_8bit=True
     model = GPTJForCausalLM.from_pretrained(model_path, torch_dtype=torch.float16)
     model.to(device)
+    model.eval()
     return model, tokenizer
 
 
@@ -48,3 +50,48 @@ if __name__ == "__main__":
     model, tokenizer = load_model(args.model_path, device)
 
     # Generate answers
+    SEP = "\n"
+    records = []
+    for question in tqdm(questions):
+        turns = []
+        prompt = ""
+        for j in range(len(question["turns"])):
+            qs = question["turns"][j]
+            prompt += qs + SEP
+            input_ids = tokenizer([prompt], return_tensors="pt").input_ids.to(device)
+
+            try:
+                output_ids = model.generate(
+                    input_ids,
+                    do_sample=True,
+                    temperature=0.7,
+                    max_length=int(512*(j+1))
+                )
+            except RuntimeError as e:
+                print("ERROR question ID: ", question["question_id"])
+                output = "ERROR"
+
+            output_ids = output_ids[0][len(input_ids[0]):]
+            output = tokenizer.decode(
+                output_ids,
+                skip_special_tokens=True,
+                spaces_between_special_tokens=False
+            )
+            output = output.strip()
+            turns.append(output)
+            prompt += output + SEP
+        
+        record = {
+            "question_id": question["question_id"],
+            "answer_id": question["question_id"],
+            "model": args.model_path,
+            "choices": [{"index": 0, "turns": turns}],
+            "tstamp": time.time(),
+        }
+        records.append(record)
+
+    # Save answers
+    filename = args.model_path.split('/')[-1]
+    with open(f"{filename}.jsonl", "a") as fout:
+        for record in records:
+            fout.write(json.dumps(record) + "\n")
