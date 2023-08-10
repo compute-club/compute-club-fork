@@ -10,8 +10,8 @@ fi
 
 echo "Running LLM Judge"
 
-export MODEL_PATH=${MODEL_PATH:-"EleutherAI/gpt-j-6B"}
-export MAX_NEW_TOKEN=${MAX_NEW_TOKEN:-"128"}
+export MODEL_PATH=${MODEL_PATH:-"EleutherAI/gpt-j-6b"}
+export MAX_NEW_TOKEN=${MAX_NEW_TOKEN:-"1024"}
 export OPENAI_API_KEY=$OPENAI_API_KEY
 export HUGGINGFACE_TOKEN=$HUGGINGFACE_TOKEN
 
