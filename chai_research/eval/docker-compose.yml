@@ -8,7 +8,7 @@ services:
       - ./.env.template
     volumes:
       - ./:/app/
-    command: /bin/sh -c "run-script.sh"
+    command: /bin/sh "run-script.sh"
     deploy:
       resources:
         reservations:

@@ -157,6 +157,7 @@ if __name__ == "__main__":
     # Average results
     df_all = pd.read_json(output_file, lines=True)
     df = df_all[["model", "score"]].groupby(["model"]).mean()
+    df = df.reset_index()
     print("Average results:")
     print(df.sort_values(by="score", ascending=False))
     df.to_json("results.jsonl", orient="records", lines=True)

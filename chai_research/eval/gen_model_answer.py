@@ -1,6 +1,8 @@
 import argparse
 import json
+import os
 import time
+
 import torch
 from tqdm import tqdm
 from transformers import AutoTokenizer, GPTJForCausalLM
@@ -18,10 +20,10 @@ def load_questions(question_file):
 
 def load_model(model_path, device):
     """Load the model and tokenizer."""
-    tokenizer = AutoTokenizer.from_pretrained(model_path)
+    tokenizer = AutoTokenizer.from_pretrained(model_path, token=os.getenv("HUGGINGFACE_TOKEN"))
     tokenizer.pad_token = tokenizer.eos_token
     # TODO: set load_in_8bit=True
-    model = GPTJForCausalLM.from_pretrained(model_path, torch_dtype=torch.float16)
+    model = GPTJForCausalLM.from_pretrained(model_path, torch_dtype=torch.float16, token=os.getenv("HUGGINGFACE_TOKEN"))
     model.to(device)
     model.eval()
     return model, tokenizer
