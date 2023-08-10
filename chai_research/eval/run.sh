@@ -1,1 +1,0 @@
-python3 gen_model_answer.py --model-path "EleutherAI/gpt-j-6B"

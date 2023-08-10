@@ -18,7 +18,7 @@ def load_questions(question_file):
 
 def load_model(model_path, device):
     """Load the model and tokenizer."""
-    tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-j-6B")
+    tokenizer = AutoTokenizer.from_pretrained(model_path)
     tokenizer.pad_token = tokenizer.eos_token
     # TODO: set load_in_8bit=True
     model = GPTJForCausalLM.from_pretrained(model_path, torch_dtype=torch.float16)
@@ -34,6 +34,12 @@ if __name__ == "__main__":
         type=str,
         required=True,
         help="The path to the weights. This can be a local folder or a Hugging Face repo ID.",
+    )
+    parser.add_argument(
+        "--max-new-token",
+        type=int,
+        default=1024,
+        help="The maximum number of new generated tokens.",
     )
     args = parser.parse_args()
 
@@ -65,7 +71,7 @@ if __name__ == "__main__":
                     input_ids,
                     do_sample=True,
                     temperature=0.7,
-                    max_length=int(512*(j+1))
+                    max_length=int(args.max_new_token*(j+1))
                 )
             except RuntimeError as e:
                 print("ERROR question ID: ", question["question_id"])
