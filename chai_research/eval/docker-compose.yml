@@ -1,0 +1,18 @@
+version: "3.3"
+services:
+  eval:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - ./.env.template
+    volumes:
+      - ./:/app/
+    command: /bin/sh "run-script.sh"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [ gpu ]

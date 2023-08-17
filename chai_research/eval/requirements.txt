@@ -1,0 +1,6 @@
+openai==0.27.8
+pandas==2.0.3
+protobuf==3.20.*
+sentencepiece!=0.1.92
+torch==1.13.0
+transformers==4.28.1
