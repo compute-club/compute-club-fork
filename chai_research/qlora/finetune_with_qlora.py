@@ -64,10 +64,10 @@ def main(config_path):
     print_trainable_parameters(model)
 
     data = load_dataset(input_dataset_path)
-    # data = data.map(lambda samples: tokenizer(samples["quote"]), batched=True)
+    data = data.map(lambda samples: tokenizer(samples["input_text"]), batched=True)
 
     # needed for gpt-neo-x tokenizer
-    # tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.pad_token = tokenizer.eos_token
 
     trainer = Trainer(
         model=model,
