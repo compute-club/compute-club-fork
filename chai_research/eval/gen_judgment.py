@@ -115,13 +115,22 @@ if __name__ == "__main__":
         required=True,
         help="The path to the weights. This can be a local folder or a Hugging Face repo ID.",
     )
+    parser.add_argument(
+        "--lora-path",
+        type=str,
+        required=True,
+        help="The path to the lora config. This can be a local folder or a Hugging Face repo ID.",
+    )
     args = parser.parse_args()
 
     # Load questions
     questions = load_questions("question.jsonl")
 
     # Load answers
-    model_name = args.model_path.split('/')[-1]
+    if args.lora_path:
+        model_name = args.lora_path.split('/')[-1]
+    else:
+        model_name = args.model_path.split('/')[-1]
     answer_file = model_name + ".jsonl"
     model_answers = load_model_answers(answer_file)
 
