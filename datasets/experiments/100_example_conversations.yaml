@@ -5,4 +5,4 @@ verbose: True
 generation_config:
   min_convo_length: 1
   max_convo_length: 3
-  num_samples: 3
+  num_samples: 10
