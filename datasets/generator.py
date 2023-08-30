@@ -5,6 +5,7 @@ from tqdm import tqdm
 import numpy as np
 import json
 import os
+import time
 from dotenv import load_dotenv
 from datasets import Dataset, load_from_disk
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
@@ -21,7 +22,7 @@ class DatasetGenerator:
         self.dataset = dataset
         self.config = config
         self.verbose = verbose
-        self.sem = asyncio.Semaphore(10) # change 10 to control the number of concurrent requests
+        self.sem = asyncio.Semaphore(5) # change 10 to control the number of concurrent requests
 
     def run(self):
         min_convo_length = self.config['min_convo_length']
@@ -43,8 +44,13 @@ class DatasetGenerator:
         for convo_length, n in zip(convo_lengths, samples_per_bucket):
             tasks.extend([self._generate_convo(convo_length) for _ in range(n)])
 
-        # Await for all tasks to complete
-        results = await asyncio.gather(*tasks)
+        pbar = tqdm(total=len(tasks), desc="Generating Completions")
+        for task in asyncio.as_completed(tasks):
+            result = await task
+            results.append(result)
+            pbar.update(1)
+
+        pbar.close()
 
         return Dataset.from_dict(utils.group_by_key(results))
 
@@ -81,10 +87,11 @@ class DatasetGenerator:
 
 
     @retry(
-            stop=stop_after_attempt(3), 
-            wait=wait_exponential(multiplier=1, min=4, max=10), 
-            retry=retry_if_exception_type(json.decoder.JSONDecodeError)
-            )
+        stop=stop_after_attempt(10), 
+        wait=wait_exponential(multiplier=2, min=4, max=120), 
+        retry=(retry_if_exception_type(json.decoder.JSONDecodeError) | retry_if_exception_type(openai.error.RateLimitError))
+    )
     async def _gen_completion(self, messages):
         completion = await openai.ChatCompletion.acreate(model="gpt-3.5-turbo", messages=messages)
+        print("Completion:", completion)
         return json.loads(completion.choices[0].message.content)
