@@ -91,7 +91,7 @@ class DatasetGenerator:
         wait=wait_exponential(multiplier=2, min=4, max=120), 
         retry=(retry_if_exception_type(json.decoder.JSONDecodeError) | retry_if_exception_type(openai.error.RateLimitError))
     )
-    async def _gen_completion(self, messages, retry_state=None):
+    async def _gen_completion(self, messages):
         completion = await openai.ChatCompletion.acreate(model="gpt-3.5-turbo", messages=messages)
         print("Completion:", completion)
         return json.loads(completion.choices[0].message.content)
