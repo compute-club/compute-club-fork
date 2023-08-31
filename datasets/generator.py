@@ -89,9 +89,13 @@ class DatasetGenerator:
     @retry(
         stop=stop_after_attempt(10), 
         wait=wait_exponential(multiplier=2, min=4, max=120), 
-        retry=(retry_if_exception_type(json.decoder.JSONDecodeError) | retry_if_exception_type(openai.error.RateLimitError)) | retry_if_exception_type(openai.error.Timeout),
+        retry=(retry_if_exception_type(json.decoder.JSONDecodeError) | retry_if_exception_type(openai.error.RateLimitError)) | retry_if_exception_type(openai.error.Timeout) | retry_if_exception_type(openai.error.APIError) | retry_if_exception_type(openai.error.APIConnectionError),
     )
     async def _gen_completion(self, messages):
         completion = await openai.ChatCompletion.acreate(model="gpt-3.5-turbo", messages=messages)
         print("Completion:", completion)
-        return json.loads(completion.choices[0].message.content)
+        try:
+            return json.loads(completion.choices[0].message.content)
+        except json.decoder.JSONDecodeError:
+            print("JSONDecodeError")
+            return "JSONDecodeError"
