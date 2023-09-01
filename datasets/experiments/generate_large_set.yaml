@@ -1,8 +1,8 @@
 input_dataset_path: "ChaiML/100_example_conversations"
-output_dataset_path: "rrustom/synthetic_conversations_test"
+output_dataset_path: "MR/synthetic_conversations_test"
 verbose: True
 
 generation_config:
   min_convo_length: 1
   max_convo_length: 3
-  num_samples: 10
+  num_samples: 5000
