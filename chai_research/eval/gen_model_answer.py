@@ -4,8 +4,9 @@ import os
 import time
 
 import torch
+from peft import PeftModel
 from tqdm import tqdm
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 
 def load_questions(question_file):
@@ -18,12 +19,16 @@ def load_questions(question_file):
     return questions
 
 
-def load_model(model_path, device):
+def load_model(model_path, lora_path, device):
     """Load the model and tokenizer."""
     tokenizer = AutoTokenizer.from_pretrained(model_path, use_auth_token=os.getenv("HUGGINGFACE_TOKEN"))
     tokenizer.pad_token = tokenizer.eos_token
     # TODO: set load_in_8bit=True
     model = AutoModelForCausalLM.from_pretrained(model_path, torch_dtype=torch.float16, use_auth_token=os.getenv("HUGGINGFACE_TOKEN"))
+    # Load adaptor
+    if lora_path:
+        model = PeftModel.from_pretrained(model=model, model_id=lora_path, use_auth_token=os.getenv("HUGGINGFACE_TOKEN"))
+        model = model.merge_and_unload()
     model.to(device)
     model.eval()
     return model, tokenizer
@@ -36,6 +41,12 @@ if __name__ == "__main__":
         type=str,
         required=True,
         help="The path to the weights. This can be a local folder or a Hugging Face repo ID.",
+    )
+    parser.add_argument(
+        "--lora-path",
+        type=str,
+        required=True,
+        help="The path to the lora config. This can be a local folder or a Hugging Face repo ID.",
     )
     parser.add_argument(
         "--max-new-token",
@@ -55,7 +66,7 @@ if __name__ == "__main__":
         device = torch.device("cuda")
     else:
         device = torch.device("cpu")
-    model, tokenizer = load_model(args.model_path, device)
+    model, tokenizer = load_model(args.model_path, args.lora_path, device)
 
     # Generate answers
     SEP = "\n"
@@ -99,7 +110,10 @@ if __name__ == "__main__":
         records.append(record)
 
     # Save answers
-    filename = args.model_path.split('/')[-1]
-    with open(f"{filename}.jsonl", "a") as fout:
+    if args.lora_path:
+        model_name = args.lora_path.split('/')[-1]
+    else:
+        model_name = args.model_path.split('/')[-1]
+    with open(f"{model_name}.jsonl", "a") as fout:
         for record in records:
             fout.write(json.dumps(record) + "\n")
