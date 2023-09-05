@@ -7,9 +7,19 @@
 Example:
 ```
 MODEL_PATH=EleutherAI/gpt-j-6b
+LORA_PATH=
 OPENAI_API_KEY=sk-XXXXXXXXXXXX
 HUGGINGFACE_TOKEN=hf_XXXXXXXXX
 ```
+
+Example with LORA path:
+```
+MODEL_PATH=EleutherAI/gpt-j-6b
+LORA_PATH=lwk723/gptj-qlora-peft
+OPENAI_API_KEY=sk-XXXXXXXXXXXX
+HUGGINGFACE_TOKEN=hf_XXXXXXXXX
+```
+
 
 2. Run docker compose command to run job
 

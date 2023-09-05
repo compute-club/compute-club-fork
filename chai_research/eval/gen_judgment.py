@@ -118,7 +118,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--lora-path",
         type=str,
-        required=True,
+        required=False,
         help="The path to the lora config. This can be a local folder or a Hugging Face repo ID.",
     )
     args = parser.parse_args()
